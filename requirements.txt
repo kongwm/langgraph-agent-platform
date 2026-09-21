@@ -1,0 +1,18 @@
+# P10 企业级 Agent 平台 —— 版本锁定（2026-09-21 实测安装版本）
+# 安装：no_proxy='*' pip install -i https://pypi.mirrors.ustc.edu.cn/simple -r requirements.txt
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+langgraph==1.2.11
+langgraph-checkpoint-postgres==3.1.2
+psycopg[binary]==3.3.6       # checkpointer 的同步驱动依赖（binary = 自带 libpq）
+langchain-anthropic==1.7.2
+anthropic==1.7.0
+asyncpg==0.31.0
+pydantic-settings==2.15.0
+structlog==26.1.0
+httpx==0.28.1
+httpx2==2.13.0          # langchain-anthropic 内部用的 HTTP 客户端（provider.py monkeypatch 依赖）
+
+# 测试
+pytest==9.1.1
+pytest-asyncio==1.4.0

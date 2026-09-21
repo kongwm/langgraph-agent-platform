@@ -1,0 +1,26 @@
+# PostgreSQL 17 —— P10 企业级平台（与 platform/backend 的 PG 容器互不影响）
+# 端口 25432 错开 backend 的 15432；一个实例里两个 database：
+#   agent_platform        业务库（conversations/users/...，Alembic 管理）
+#   agent_platform_meta   框架库（LangGraph checkpointer 表，setup() 自建）
+# 用法：docker compose up -d && 等 healthcheck 变 healthy
+services:
+  postgres:
+    image: postgres:17
+    container_name: aispace-p10-pg
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agent_dev
+      POSTGRES_DB: agent_platform
+    ports:
+      - "25432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro   # 首次起库时建 meta 库
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agent -d agent_platform"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
